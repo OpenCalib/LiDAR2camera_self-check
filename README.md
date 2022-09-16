@@ -1,5 +1,7 @@
 # LiDAR2camera_self_check
-
+![image](https://github.com/OpenCalib/LiDAR2camera_self-check/blob/master/pictures/pipline.pdf)
+![image](https://github.com/OpenCalib/LiDAR2camera_self-check/blob/master/pictures/input.pdf)
+![image](https://github.com/OpenCalib/LiDAR2camera_self-check/blob/master/pictures/performance.pdf)
 ## Table of Contents
 
 - [Requirements](#Requirements)
