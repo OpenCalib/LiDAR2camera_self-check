@@ -1,17 +1,11 @@
-# LCCNet
-
-Official PyTorch implementation of the paper “LCCNet: Lidar and Camera Self-Calibration Using Cost Volume Network”. A video of the demonstration of the method can be found on
- https://www.youtube.com/watch?v=UAAGjYT708A
+# LiDAR2camera_self_check
 
 ## Table of Contents
 
 - [Requirements](#Requirements)
-- [Pre-trained model](#Pre-trained_model)
 - [Evaluation](#Evaluation)
 - [Train](#Train)
 - [Citation](#Citation)
-
-
 
 ## Requirements
 
@@ -22,10 +16,6 @@ Official PyTorch implementation of the paper “LCCNet: Lidar and Camera Self-Ca
 ```commandline
 pip install -r requirements.txt
 ```
-
-## Pre-trained model
-
-Pre-trained models can be downloaded from [google drive](https://drive.google.com/drive/folders/1VbQV3ERDeT3QbdJviNCN71yoWIItZQnl?usp=sharing)
 
 ## Evaluation
 
@@ -38,11 +28,10 @@ data_folder = '/path/to/the/KITTI/odometry_color/'
 4. Download pre-trained models and modify the weights path in `evaluate_calib.py`.
 ```python
 weights = [
-   './pretrained/kitti_iter1.tar',
-   './pretrained/kitti_iter2.tar',
-   './pretrained/kitti_iter3.tar',
-   './pretrained/kitti_iter4.tar',
-   './pretrained/kitti_iter5.tar',
+    # './pretrained/final_checkpoint_r20.00_t1.50_e4_0.094.tar',
+    # './pretrained/final_checkpoint_r2.00_t0.20_e4_0.228.tar',
+    # './pretrained/final_checkpoint_r10.00_t1.00_e3_0.108.tar',
+    './pretrained/final_checkpoint_r5.00_t0.50_e-1_0.145.tar',
 ]
 ```
 5. Run evaluation.
@@ -55,20 +44,10 @@ python evaluate_calib.py
 python train_with_sacred.py
 ```
 
-## Citation
- 
-Thank you for citing our paper if you use any of this code or datasets.
-```
-@article{lv2020lidar,
-  title={Lidar and Camera Self-Calibration using CostVolume Network},
-  author={Lv, Xudong and Wang, Boya and Ye, Dong and Wang, Shuo},
-  journal={arXiv preprint arXiv:2012.13901},
-  year={2020}
-}
-```
+
 
 ### Acknowledgments
- We are grateful to Daniele Cattaneo for his CMRNet [github repository](https://github.com/cattaneod/CMRNet). We use it as our initial code base.
+ We are grateful to Daniele Cattaneo for his CMRNet [github repository](https://github.com/cattaneod/CMRNet) and LCCNet [github repository](https://github.com/IIPCVLAB/LCCNet). We use them as our initial code base.
  
 <!-- [correlation_package](models/LCCNet/correlation_package) was taken from [flownet2](https://github.com/NVIDIA/flownet2-pytorch/tree/master/networks/correlation_package)
 
