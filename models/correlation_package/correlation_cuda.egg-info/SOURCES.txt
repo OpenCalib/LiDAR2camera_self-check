@@ -1,5 +1,7 @@
+LICENSE
 correlation_cuda.cc
 correlation_cuda_kernel.cu
+pyproject.toml
 setup.py
 correlation_cuda.egg-info/PKG-INFO
 correlation_cuda.egg-info/SOURCES.txt

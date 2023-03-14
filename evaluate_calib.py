@@ -58,18 +58,18 @@ plt_size = 10.5
 ex = Experiment("LCCNet-evaluate-iterative")
 ex.captured_out_filter = apply_backspaces_and_linefeeds
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 
 # noinspection PyUnusedLocal
 @ex.config
 def config():
     dataset = 'kitti/odom'
     # data_folder = '/home/wangshuo/Datasets/KITTI/odometry_color/'
-    data_folder = '/home/wpj/KITTI/LCCNet_dataset/'
+    data_folder = '/mnt/petrelfs/weipengjin/file_trans/LCCNet_dataset/'
     test_sequence = 0
     use_prev_output = False
-    max_t = 0.5
-    max_r = 5.
+    max_t = 0.2
+    max_r = 1.0
     occlusion_kernel = 5
     occlusion_threshold = 3.0
     network = 'Res_f1'
@@ -92,10 +92,10 @@ def config():
     out_fig_lg = 'EN' # [EN, CN]
 
 weights = [
-    # './pretrained/final_checkpoint_r20.00_t1.50_e4_0.094.tar',
-    # './pretrained/final_checkpoint_r2.00_t0.20_e4_0.228.tar',
-    # './pretrained/final_checkpoint_r10.00_t1.00_e3_0.108.tar',
-    './pretrained/final_checkpoint_r5.00_t0.50_e-1_0.145.tar',
+#     # './pretrained/final_checkpoint_r20.00_t1.50_e4_0.094.tar',
+#     # './pretrained/final_checkpoint_r2.00_t0.20_e4_0.228.tar',
+#     # './pretrained/final_checkpoint_r10.00_t1.00_e3_0.108.tar',
+'./checkpoints/kitti/odom/val_seq_00/models/checkpoint_r2.00_t0.20_e119_0.108.tar'
 ]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -147,8 +147,8 @@ def main(_config, seed):
     if _config['weight'] is not None:
         weights = _config['weight']
 
-    if _config['iterative_method'] == 'single':
-        weights = [weights[0]]
+    # if _config['iterative_method'] == 'single':
+    #     weights = [weights[0]]
 
     dataset_class = DatasetLidarCameraKittiOdometry
     # dataset_class = DatasetTest
@@ -189,6 +189,18 @@ def main(_config, seed):
                                                 pin_memory=False)
 
     print(len(TestImgLoader))
+    if _config['network'].startswith('Res'):
+        feat = 1
+        md = 4
+        split = _config['network'].split('_')
+        for item in split[1:]:
+            if item.startswith('f'):
+                feat = int(item[-1])
+            elif item.startswith('md'):
+                md = int(item[2:])
+        assert 0 < feat < 7, "Feature Number from PWC have to be between 1 and 6"
+        assert 0 < md, "md must be positive"
+
 
     models = [] # iterative model
     for i in range(len(weights)):
@@ -205,7 +217,13 @@ def main(_config, seed):
             assert 0 < feat < 7, "Feature Number from PWC have to be between 1 and 6"
             assert 0 < md, "md must be positive"
             model = LCCNet(input_size, use_feat_from=feat, md=md,
-                             use_reflectance=_config['use_reflectance'], dropout=_config['dropout'])
+                            use_reflectance=_config['use_reflectance'], dropout=_config['dropout'])
+            from thop import profile
+            input1 = torch.randn(1, 3, 256, 512) 
+            input2 = torch.randn(1, 1, 256, 512) 
+            flops, params = profile(model, inputs=(input1, input2))                
+            print('FLOPs = ' + str(flops/1000**3) + 'G')
+            print('Params = ' + str(params/1000**2) + 'M')  
         else:
             raise TypeError("Network unknown")
 
@@ -450,7 +468,6 @@ def main(_config, seed):
             for iteration in range(start, len(weights)):
                 # Run the i-th network
                 t1 = time.time()
-
                 classification_results = models[iteration](rgb_resize, lidar_resize)
                 run_time = time.time() - t1
                 _, classify_reaults = torch.max(classification_results,dim=1)
