@@ -53,7 +53,7 @@ def config():
     checkpoints = './checkpoints/'
     dataset = 'kitti/odom' # 'kitti/raw'
     # data_folder = '/home/wangshuo/Datasets/KITTI/odometry/data_odometry_full/'
-    data_folder = '/home/wpj/KITTI/LCCNet_dataset/'
+    data_folder = '/mnt/petrelfs/weipengjin/file_trans/LCCNet_dataset/'
     use_reflectance = False
     val_sequence = 0
     epochs = 120
@@ -61,7 +61,7 @@ def config():
     loss = 'CrossEntropy' #'combined'
     max_t = 0.2#1.5 # 1.5, 1.0,  0.5,  0.2,  0.1
     max_r = 2.0#20. # 20.0, 10.0, 5.0,  2.0,  1.0
-    batch_size = 48  # 240
+    batch_size = 240  # 240
     num_worker = 12
     network = 'Res_f1'
     optimizer = 'adam'
@@ -80,7 +80,7 @@ def config():
 
 
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 
 EPOCH = 1

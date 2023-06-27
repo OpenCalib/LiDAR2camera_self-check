@@ -247,13 +247,13 @@ class LCCNet(nn.Module):
             input_lidar = 2
 
         # original resnet
-        self.pretrained_encoder = True
+        self.pretrained_encoder = False
         self.net_encoder = ResnetEncoder(num_layers=self.res_num, pretrained=True, num_input_images=1)
 
         # resnet with leakyRELU
         self.Action_Func = Action_Func
         self.attention = attention
-        self.inplanes = 64
+        self.inplanes = 4
         if self.res_num == 50:
             layers = [3, 4, 6, 3]
             add_list = [1024, 512, 256, 64]
@@ -271,25 +271,25 @@ class LCCNet(nn.Module):
 
 
         # rgb_image
-        self.conv1_rgb = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3)
+        self.conv1_rgb = nn.Conv2d(3, 4, kernel_size=7, stride=2, padding=3)
         self.elu_rgb = nn.ELU()
         self.leakyRELU_rgb = nn.LeakyReLU(0.1)
         self.maxpool_rgb = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1_rgb = self._make_layer(block, 64, layers[0])
-        self.layer2_rgb = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3_rgb = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4_rgb = self._make_layer(block, 512, layers[3], stride=2)
+        self.layer1_rgb = self._make_layer(block, 4, layers[0])
+        self.layer2_rgb = self._make_layer(block, 8, layers[1], stride=2)
+        self.layer3_rgb = self._make_layer(block, 16, layers[2], stride=2)
+        self.layer4_rgb = self._make_layer(block, 32, layers[3], stride=2)
 
         # lidar_image
-        self.inplanes = 64
-        self.conv1_lidar = nn.Conv2d(input_lidar, 64, kernel_size=7, stride=2, padding=3)
+        self.inplanes = 4
+        self.conv1_lidar = nn.Conv2d(input_lidar, 4, kernel_size=7, stride=2, padding=3)
         self.elu_lidar = nn.ELU()
         self.leakyRELU_lidar = nn.LeakyReLU(0.1)
         self.maxpool_lidar = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1_lidar = self._make_layer(block, 64, layers[0])
-        self.layer2_lidar = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3_lidar = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4_lidar = self._make_layer(block, 512, layers[3], stride=2)
+        self.layer1_lidar = self._make_layer(block, 4, layers[0])
+        self.layer2_lidar = self._make_layer(block, 8, layers[1], stride=2)
+        self.layer3_lidar = self._make_layer(block, 16, layers[2], stride=2)
+        self.layer4_lidar = self._make_layer(block, 32, layers[3], stride=2)
 
         self.corr = Correlation(pad_size=md, kernel_size=1, max_displacement=md, stride1=1, stride2=1, corr_multiply=1)
         self.leakyRELU = nn.LeakyReLU(0.1)

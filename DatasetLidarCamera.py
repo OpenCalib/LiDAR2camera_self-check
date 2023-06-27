@@ -52,7 +52,7 @@ class DatasetLidarCameraKittiOdometry(Dataset):
         self.suf = suf
 
         self.all_files = []
-        self.sequence_list = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
+        self.sequence_list = ['00','01', '02', '03', '04', '05', '06', '07', '08', '09', '10',
                               '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
         # self.sequence_list = ['00', '01', '02']        
         # self.model = CameraModel()
@@ -86,53 +86,53 @@ class DatasetLidarCameraKittiOdometry(Dataset):
                         self.all_files.append(os.path.join(seq, image_name.split('.')[0]))
                 elif (not seq == val_sequence) and split == 'train':
                     self.all_files.append(os.path.join(seq, image_name.split('.')[0]))
-        self.train_RT = []
-        if split == 'train':
+        # self.train_RT = []
+        # if split == 'train':
             
-            train_RT_file = osp.join(dataset_dir, 'sequences',
-                                        f'train_RT_left_seq{val_sequence}_{max_r:.2f}_{max_t:.2f}.csv')
+        #     train_RT_file = osp.join(dataset_dir, 'sequences',
+        #                                 f'train_RT_left_seq{val_sequence}_{max_r:.2f}_{max_t:.2f}.csv')
 
-            if osp.exists(train_RT_file):
-                print(f'TRAIN SET: Using this file: {train_RT_file}')
-                df_train_RT = pd.read_csv(train_RT_file, sep=',')
-                for index, row in df_train_RT.iterrows():
-                    # print("row:",row)
-                    self.train_RT.append(list(row))
-            else:
-                print(f'TRAIN SET - Not found: {train_RT_file}')
-                print("Generating a new one")
-                train_RT_file = open(train_RT_file, 'w')
-                train_RT_file = csv.writer(train_RT_file, delimiter=',')
-                train_RT_file.writerow(['id', 'pair', 'Yaw', 'Pitch', 'Roll', 'tx', 'ty', 'tz', 'classify_label'])
+        #     if osp.exists(train_RT_file):
+        #         print(f'TRAIN SET: Using this file: {train_RT_file}')
+        #         df_train_RT = pd.read_csv(train_RT_file, sep=',')
+        #         for index, row in df_train_RT.iterrows():
+        #             # print("row:",row)
+        #             self.train_RT.append(list(row))
+        #     else:
+        #         print(f'TRAIN SET - Not found: {train_RT_file}')
+        #         print("Generating a new one")
+        #         train_RT_file = open(train_RT_file, 'w')
+        #         train_RT_file = csv.writer(train_RT_file, delimiter=',')
+        #         train_RT_file.writerow(['id', 'pair', 'Yaw', 'Pitch', 'Roll', 'tx', 'ty', 'tz', 'classify_label'])
 
-                for i in range(len(self.all_files)):
-                    data_seed = random.randint(1,10)  #大于5数据为配准失败（负样本），小于等于5为配准成功（正样本）
-                    rotz,roty,rotx,transl_x,transl_y,transl_z,label = self.generate_initial_transformation(data_seed)
-                    # if data_seed > 5 :
-                    #     max_angle = self.max_r
-                    #     rotz = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
-                    #     roty = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
-                    #     rotx = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
-                    #     transl_x = np.random.uniform(*(choice([(-self.max_t,-0.1),(0.1,self.max_t)])))
-                    #     transl_y = np.random.uniform(*(choice([(-self.max_t,-0.1),(0.1,self.max_t)])))
-                    #     transl_z = np.random.uniform(*(choice([(-self.max_t,-0.1),(0.1,self.max_t)])))  
-                    #     label = 0
-                    # else:
-                    #     rotz = np.random.uniform(-1, 1) * (3.141592 / 180.0)
-                    #     roty = np.random.uniform(-1, 1) * (3.141592 / 180.0)
-                    #     rotx = np.random.uniform(-1, 1) * (3.141592 / 180.0)
-                    #     transl_x = np.random.uniform(-0.1, 0.1)
-                    #     transl_y = np.random.uniform(-0.1, 0.1)
-                    #     transl_z = np.random.uniform(-0.1, 0.1)   
-                    #     label = 1      
+        #         for i in range(len(self.all_files)):
+        #             data_seed = random.randint(1,10)  #大于5数据为配准失败（负样本），小于等于5为配准成功（正样本）
+        #             rotz,roty,rotx,transl_x,transl_y,transl_z,label = self.generate_initial_transformation(data_seed)
+        #             # if data_seed > 5 :
+        #             #     max_angle = self.max_r
+        #             #     rotz = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
+        #             #     roty = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
+        #             #     rotx = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
+        #             #     transl_x = np.random.uniform(*(choice([(-self.max_t,-0.1),(0.1,self.max_t)])))
+        #             #     transl_y = np.random.uniform(*(choice([(-self.max_t,-0.1),(0.1,self.max_t)])))
+        #             #     transl_z = np.random.uniform(*(choice([(-self.max_t,-0.1),(0.1,self.max_t)])))  
+        #             #     label = 0
+        #             # else:
+        #             #     rotz = np.random.uniform(-1, 1) * (3.141592 / 180.0)
+        #             #     roty = np.random.uniform(-1, 1) * (3.141592 / 180.0)
+        #             #     rotx = np.random.uniform(-1, 1) * (3.141592 / 180.0)
+        #             #     transl_x = np.random.uniform(-0.1, 0.1)
+        #             #     transl_y = np.random.uniform(-0.1, 0.1)
+        #             #     transl_z = np.random.uniform(-0.1, 0.1)   
+        #             #     label = 1      
 
-                    train_RT_file.writerow([str(self.all_files[i][:6]),str(self.all_files[i][:-1]), rotx, roty, rotz, transl_x, transl_y, transl_z, label])
-                    self.train_RT.append([str(self.all_files[i][:6]), str(self.all_files[i][:-1]), float(rotx), float(roty), float(rotz), float(transl_x), float(transl_y), float(transl_z), int(label)])
+        #             train_RT_file.writerow([str(self.all_files[i][:6]),str(self.all_files[i][:-1]), rotx, roty, rotz, transl_x, transl_y, transl_z, label])
+        #             self.train_RT.append([str(self.all_files[i][:6]), str(self.all_files[i][:-1]), float(rotx), float(roty), float(rotz), float(transl_x), float(transl_y), float(transl_z), int(label)])
 
-            assert len(self.train_RT) == len(self.all_files), "Something wrong with train RTs"
-            self.metadata = self.all_files
+        #     assert len(self.train_RT) == len(self.all_files), "Something wrong with train RTs"
+        #     self.metadata = self.all_files
 
-        # self.val_RT = []
+        # # self.val_RT = []
 
         self.val_RT = []
         if split == 'val' or split == 'test':
@@ -185,6 +185,8 @@ class DatasetLidarCameraKittiOdometry(Dataset):
                     #                        rotx, roty, rotz])
                     # self.val_RT.append([float(i), float(transl_x), float(transl_y), float(transl_z),
                     #                      float(rotx), float(roty), float(rotz)])
+            print("len(self.val_RT):",len(self.val_RT))
+            print("len(self.all_files):",len(self.all_files))
             assert len(self.val_RT) == len(self.all_files), "Something wrong with test RTs"
     def generate_initial_transformation(self, data_seed):
         max_angle = self.max_r
@@ -201,19 +203,19 @@ class DatasetLidarCameraKittiOdometry(Dataset):
                 else: 
                     break
             if rotz_seed > 1:
-                rotz = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
+                rotz = np.random.uniform(*(choice([(-max_angle,-0.5),(0.5,max_angle)]))) * (3.141592 / 180.0)
             else:
                 rotz = np.random.uniform(-1, 1) * (3.141592 / 180.0)
 
  
             if roty_seed > 1:
-                roty = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
+                roty = np.random.uniform(*(choice([(-max_angle,-0.5),(0.5,max_angle)]))) * (3.141592 / 180.0)
             else:
                 roty = np.random.uniform(-1, 1) * (3.141592 / 180.0)    
 
   
             if rotx_seed > 1:
-                rotx = np.random.uniform(*(choice([(-max_angle,-1),(1,max_angle)]))) * (3.141592 / 180.0)
+                rotx = np.random.uniform(*(choice([(-max_angle,-0.5),(0.5,max_angle)]))) * (3.141592 / 180.0)
             else:
                 rotx = np.random.uniform(-1, 1) * (3.141592 / 180.0)
 
@@ -237,9 +239,9 @@ class DatasetLidarCameraKittiOdometry(Dataset):
 
             label = 0                                                        
         else:
-            rotz = np.random.uniform(-1, 1) * (3.141592 / 180.0)
-            roty = np.random.uniform(-1, 1) * (3.141592 / 180.0)
-            rotx = np.random.uniform(-1, 1) * (3.141592 / 180.0)
+            rotz = np.random.uniform(-0.5, 0.5) * (3.141592 / 180.0)
+            roty = np.random.uniform(-0.5, 0.5) * (3.141592 / 180.0)
+            rotx = np.random.uniform(-0.5, 0.5) * (3.141592 / 180.0)
             transl_x = np.random.uniform(-0.1, 0.1)
             transl_y = np.random.uniform(-0.1, 0.1)
             transl_z = np.random.uniform(-0.1, 0.1)  
@@ -353,15 +355,17 @@ class DatasetLidarCameraKittiOdometry(Dataset):
             # transl_y = np.random.uniform(-self.max_t, self.max_t)
             # transl_z = np.random.uniform(-self.max_t, self.max_t)
             # transl_z = np.random.uniform(-self.max_t, min(self.max_t, 1.))
-            initial_RT = self.train_RT[idx]
-            # print("initial_RT:",initial_RT)
-            rotz = initial_RT[4]
-            roty = initial_RT[3]
-            rotx = initial_RT[2]
-            transl_x = initial_RT[5]
-            transl_y = initial_RT[6]
-            transl_z = initial_RT[7]  
-            label =  initial_RT[8]         
+            data_seed = random.randint(1,10)  #大于5数据为配准失败（负样本），小于等于5为配准成功（正样本）
+            rotz,roty,rotx,transl_x,transl_y,transl_z,label = self.generate_initial_transformation(data_seed)
+            # initial_RT = self.train_RT[idx]
+
+            # rotz = initial_RT[4]
+            # roty = initial_RT[3]
+            # rotx = initial_RT[2]
+            # transl_x = initial_RT[5]
+            # transl_y = initial_RT[6]
+            # transl_z = initial_RT[7]  
+            # label =  initial_RT[8]         
         else:
             initial_RT = self.val_RT[idx]
             # print("initial_RT:",initial_RT)
